@@ -1,0 +1,97 @@
+@import "compass/css3";
+html {
+    scroll-behavior: smooth;
+  }
+body {    
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden;
+}
+
+
+.page-top {
+    margin: 0;
+    position: relative;
+    padding-left: 20px;
+    padding-right: 20px;
+    height: 60px;
+    background-color: black;
+    color: white;
+}
+
+.page-top>p {
+    margin: 0 !important;
+    padding-top: 18px;
+}
+nav {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.2);
+    padding:0px 20px;
+  }
+
+  section {
+    background-image: url(back.jpg);
+    background-size: cover;
+    width: 100%;
+    height: 800px;
+  }
+  .box{
+    margin-top: 20px;
+    height: 1000px;
+  }
+
+  nav li a:hover{
+    background: red;
+  }
+
+  div {
+    vertical-align: top;
+  }
+
+.banner {
+  position: relative;
+  text-align: center;
+}
+
+.centered-1 {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3em;
+    border-radius: 15px;
+  }
+
+
+.info-1 {
+    height: 40vh;
+    background-image: linear-gradient(to right, #a0f6a8, #00dbc4, #00b9e3, #008feb, #505ac6);
+    margin-top: -6px;
+    padding-top: 20px;
+}
+
+.big-line {
+    width: 200px;
+    height: 4px;
+    background-color: rgb(20, 20, 20) ;
+    margin: 0 auto;
+}
+.small-line {
+    width: 100px;
+    height: 4px;
+    background-color: rgb(20, 20, 20) ;
+    margin: 0 auto;
+}
+
+.hd1 {
+    font-size: 3em;
+}
+
+.hd3 {
+    font-size: 1.5em;
+}
+
+

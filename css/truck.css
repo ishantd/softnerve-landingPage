@@ -1,0 +1,917 @@
+@import url("https://fonts.googleapis.com/css?family=Fredoka+One&display=swap");
+* {
+  box-sizing: border-box;
+  transition: all 0.25s ease;
+}
+body {
+  background-color: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  font-size: 2rem;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-family: 'Fredoka One', cursive;
+  text-align: center;
+}
+label {
+  position: absolute;
+  top: calc((var(--margin, 35) * 1%) + var(--size) * 0.5px - 80px);
+}
+span {
+  font-size: 1rem;
+}
+input {
+  position: absolute;
+  width: 120px;
+  padding: 10px;
+  top: calc((var(--margin, 35) * 1%) + var(--size) * 0.5px);
+  z-index: 2;
+}
+input:in-range {
+  border: 5px solid #5f0;
+}
+input:out-of-range {
+  border: 5px solid #ff4000;
+  animation: shake 0.1s infinite alternate;
+}
+:root {
+  --bg: #eee;
+  --size: 300;
+  --margin: 45;
+  --chrome-hue: 58;
+  --glass-hue: 200;
+  --indicator-hue: 40;
+  --tail-light-hue: 10;
+  --trim-width: 2;
+  --plastic-lightness: 20;
+  --coilover-lightness: 15;
+  --grill-lightness: 60;
+  --chrome-lightness: 80;
+  --chrome-lightness-highlight: 95;
+  --chassis-lightness: 20;
+}
+@media (min-width: 768px) {
+  :root {
+    --trim-width: 2;
+    --size: 400;
+    --margin: 45;
+  }
+}
+@media (min-width: 768px) and (min-height: 600px) {
+  :root {
+    --trim-width: 4;
+    --size: 600;
+    --margin: 32;
+  }
+}
+/**
+ * Things that need to move when out of range
+ * 1. Light bar appears
+ * 2. Wheels scale
+ * 3. Suspension scales
+ * 4. Truck body rises
+ * 5. Engine block pops out
+*/
+input:out-of-range ~ .truck {
+  --elevated: 1;
+}
+input:out-of-range ~ .truck .truck__body-wrapper {
+  --multiplier: 0.18;
+}
+input:out-of-range ~ .truck .truck__engine-block-wrapper {
+  --engine-rise: 0;
+}
+input:out-of-range ~ .truck .truck__light-bar {
+  --light-bar-scale: 1;
+}
+input:out-of-range ~ .truck .truck__wheel-container {
+  --wheel-scale: 2;
+}
+input:out-of-range ~ .truck .truck__underbody {
+  --multiplier: 0.26;
+}
+.truck {
+  --coilover: hsl(var(--truck-hue), 100%, calc(var(--coilover-lightness) * 1%));
+  --chassis: hsl(var(--truck-hue), 100%, calc(var(--chassis-lightness) * 1%));
+  --plastic: hsl(var(--truck-hue), 0%, calc(var(--plastic-lightness) * 1%));
+  --grill: hsl(var(--truck-hue), 0%, calc(var(--grill-lightness) * 1%));
+  --chrome: hsl(var(--truck-hue), 0%, calc(var(--chrome-lightness) * 1%));
+  --chrome-highlight: hsl(var(--truck-hue), 0%, calc(var(--chrome-lightness-highlight) * 1%));
+  --wheel-height: calc(var(--size) * 0.12);
+  --wheel-width: calc(var(--size) * 0.14);
+  height: calc(var(--size) * 1px);
+  position: relative;
+  width: calc(var(--size) * 1px);
+  transform: translate(0, -50%);
+  transform-style: preserve-3d;
+  animation: upsydownsy 5s infinite linear;
+}
+.truck__body-wrapper {
+  --multiplier: 0;
+  --multiplier: 0.39;
+  position: absolute;
+  transform: translate(0, calc((var(--size) * var(--multiplier)) * 1px));
+  width: 100%;
+  z-index: 3;
+}
+.truck__body {
+  animation: body-rumble 0.1s infinite ease-in-out;
+}
+@-moz-keyframes body-rumble {
+  0%, 100% {
+    transform: translate3d(0, 0);
+  }
+  50% {
+    transform: translate(0, calc(var(--size) * 0.0015px));
+  }
+}
+@-webkit-keyframes body-rumble {
+  0%, 100% {
+    transform: translate3d(0, 0);
+  }
+  50% {
+    transform: translate(0, calc(var(--size) * 0.0015px));
+  }
+}
+@-o-keyframes body-rumble {
+  0%, 100% {
+    transform: translate3d(0, 0);
+  }
+  50% {
+    transform: translate(0, calc(var(--size) * 0.0015px));
+  }
+}
+@keyframes body-rumble {
+  0%, 100% {
+    transform: translate3d(0, 0);
+  }
+  50% {
+    transform: translate(0, calc(var(--size) * 0.0015px));
+  }
+}
+.truck__front {
+  border-radius: 5% 5% 0 0/15% 15% 0 0;
+  position: absolute;
+  top: calc(var(--size) * 0.425px);
+  right: 4%;
+  height: calc(var(--size) * 0.1px);
+  width: calc(var(--size) * 0.295px);
+  background: hsl(var(--truck-hue), 100%, 40%);
+  z-index: 5;
+}
+.truck__grill {
+  height: 85%;
+  width: 100%;
+  --bg: var(--grill);
+  --chrome-highlight: hsl(var(--truck-hue), 0%, calc((var(--grill-lightness) + 20) * 1%));
+  background: linear-gradient(125deg, transparent, transparent 25%, var(--chrome-highlight) 25%, var(--chrome-highlight) 30%, transparent 30%, transparent 35%, var(--chrome-highlight) 35%, var(--chrome-highlight) 45%, transparent 45%), var(--bg);
+  position: absolute;
+  bottom: 5%;
+  left: 0;
+  overflow: hidden;
+}
+.truck__front-bumper {
+  border-radius: calc(var(--trim-width) * 1px);
+  position: absolute;
+  top: 100%;
+  width: 116%;
+  height: 45%;
+  background: linear-gradient(125deg, var(--chrome), var(--chrome) 10%, var(--chrome-highlight) 10%, var(--chrome-highlight) 15%, var(--chrome) 15%, var(--chrome) 20%, var(--chrome-highlight) 20%, var(--chrome-highlight) 30%, var(--chrome) 30%);
+  left: -6%;
+}
+.truck__front-bumper:before {
+  left: 28%;
+}
+.truck__front-bumper:after {
+  left: 57%;
+}
+.truck__headlight {
+  border-radius: 10%;
+  position: absolute;
+  height: calc(var(--size) * 0.046px);
+  width: calc(var(--size) * 0.046px);
+  background: #fff;
+  top: 15%;
+  width: 15%;
+}
+.truck__headlight:after {
+  border-radius: 10%;
+  content: '';
+  background: hsl(var(--indicator-hue), 100%, 50%);
+  position: absolute;
+  height: 30%;
+  width: 100%;
+  top: 110%;
+}
+.truck__headlight--left {
+  left: 5%;
+}
+.truck__headlight--right {
+  right: 5%;
+}
+.truck__grill-vent {
+  position: absolute;
+  bottom: 15%;
+  height: 70%;
+  width: 54%;
+  z-index: 2;
+  left: 50%;
+  transform: translate(-50%, 0);
+  --black: hsl(var(--truck-hue), 0%, calc(var(--plastic-lightness) * 1%));
+  background: repeating-linear-gradient(0deg, var(--black) 0, var(--black) 20%, transparent 20%, transparent 40%);
+}
+.truck__bonnet {
+  background: hsl(var(--truck-hue), 100%, 40%);
+  border-radius: 2% 2% 0 0/100% 100% 0 0;
+  width: 160%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 15%;
+}
+.truck__bonnet:before {
+  position: absolute;
+  content: '';
+  height: 1200%;
+  width: 1%;
+  background: var(--chrome);
+  bottom: 90%;
+  left: 10%;
+  transform-origin: bottom center;
+  animation: sway 0.2s infinite ease;
+}
+@-moz-keyframes sway {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-15deg);
+  }
+}
+@-webkit-keyframes sway {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-15deg);
+  }
+}
+@-o-keyframes sway {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-15deg);
+  }
+}
+@keyframes sway {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-15deg);
+  }
+}
+.truck__cab {
+  --glass: hsl(var(--glass-hue), 100%, 60%);
+  --glass-highlight: hsl(var(--glass-hue), 100%, 90%);
+  height: calc(var(--size) * 0.12px);
+  width: calc(var(--size) * 0.425px);
+  position: absolute;
+  top: calc(var(--size) * 0.32px);
+  left: 28%;
+  z-index: 2;
+}
+.truck__windshield {
+  background: hsl(var(--truck-hue), 100%, 50%);
+  border-radius: 0 15% 0 0;
+  position: absolute;
+  height: 100%;
+  width: 60%;
+  right: 0;
+  top: 0;
+  transform: skewX(30deg);
+  z-index: 2;
+}
+.truck__windshield:after {
+  content: '';
+  position: absolute;
+  height: 80%;
+  width: 85%;
+  background: linear-gradient(140deg, transparent 0, transparent 10%, var(--glass-highlight) 10%, var(--glass-highlight) 15%, transparent 15%, transparent 20%, var(--glass-highlight) 20%, var(--glass-highlight) 30%, transparent 30%), var(--glass);
+  top: 10%;
+  left: 10%;
+  border-radius: 8% 15% 0 0;
+}
+.truck__wing-mirror {
+  background: var(--chrome);
+  position: absolute;
+  top: 55%;
+  height: 25%;
+  width: 10%;
+  border-radius: 25%;
+}
+.truck__wing-mirror--left {
+  z-index: 3;
+  left: 25%;
+  border-radius: 25% 5% 5% 25%;
+}
+.truck__wing-mirror--left:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  height: 20%;
+  width: 40%;
+  background: var(--chrome);
+  left: 95%;
+}
+.truck__wing-mirror--right {
+  right: -10%;
+}
+.truck__side-step {
+  position: absolute;
+  bottom: -5%;
+  left: 28%;
+  width: 12%;
+  height: 10%;
+  background: var(--plastic);
+  border-radius: calc(var(--trim-width) * 1px) calc(var(--trim-width) * 1px) 0 0;
+}
+.truck__side-window-frame {
+  background: hsl(var(--truck-hue), 100%, 50%);
+  position: absolute;
+  height: 100%;
+  width: 60%;
+  left: 0%;
+  top: 0;
+  transform: skew(-10deg);
+  border-radius: 10% 0 0 0/25% 0 0 0;
+}
+.truck__side-window-frame:after {
+  border-radius: 10% 0 0 0/25% 0 0 0;
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  height: 80%;
+  width: 45%;
+  background: var(--glass);
+}
+.truck__side-window-frame:before {
+  content: '';
+  position: absolute;
+  top: 10%;
+  width: 25%;
+  background: hsl(var(--truck-hue), 0%, calc(var(--plastic-lightness) * 1%));
+  height: 80%;
+  left: 50%;
+}
+.truck__engine-block-wrapper {
+  position: absolute;
+  height: calc(var(--size) * 0.075px);
+  width: calc(var(--size) * 0.18px);
+  right: calc(var(--size) * 0.2px);
+  top: calc(var(--size) * 0.3525px);
+  transform: translate(0, calc(var(--engine-rise, 100) * 1%));
+  z-index: 3;
+}
+.truck__engine-block {
+  height: 100%;
+  width: 100%;
+  animation: rumble 0.1s infinite ease;
+}
+.truck__engine-block:before {
+  content: '';
+  position: absolute;
+  top: 70%;
+  left: 25%;
+  background: linear-gradient(90deg, var(--grill) 0, var(--grill) 20%, var(--chrome) 20%, var(--chrome));
+  width: 50%;
+  height: 30%;
+}
+.truck__engine-block-head {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  left: 0;
+  height: 80%;
+  background: var(--grill);
+  border-radius: 25% 25% 25% 25%/50% 50% 50% 50%;
+  overflow: hidden;
+}
+.truck__engine-block-hole {
+  position: absolute;
+  background: var(--plastic);
+  border-radius: 100%;
+  top: 20%;
+  height: 60%;
+  width: 20%;
+  left: 55%;
+}
+.truck__engine-block-front {
+  position: absolute;
+  border-radius: 25% 25% 25% 25%/50% 50% 50% 50%;
+  top: 0;
+  width: 100%;
+  background: var(--chrome);
+  height: 100%;
+  left: 20%;
+}
+.truck__engine-block-front:after,
+.truck__engine-block-front:before {
+  content: '';
+  position: absolute;
+  background: var(--plastic);
+  height: 60%;
+  top: 20%;
+  width: 20%;
+  border-radius: 100%;
+}
+.truck__engine-block-front:before {
+  left: 5%;
+}
+.truck__engine-block-front:after {
+  left: 30%;
+}
+@-moz-keyframes rumble {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(0, 5%);
+  }
+}
+@-webkit-keyframes rumble {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(0, 5%);
+  }
+}
+@-o-keyframes rumble {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(0, 5%);
+  }
+}
+@keyframes rumble {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(0, 5%);
+  }
+}
+.truck__side-body {
+  --wheel-arch-rear-height: 40;
+  --wheel-arch-front-height: 55;
+  --wheel-arch-width: 18;
+  --wheel-arch-rear-left: 6;
+  --wheel-arch-front-left: 45;
+  border-radius: 2% 0 0 0/10% 0 0 0;
+  background: hsl(var(--truck-hue), 100%, 50%);
+  height: calc(var(--size) * 0.14px);
+  position: absolute;
+  left: calc(var(--size) * 0.05px);
+  width: calc(var(--size) * 0.9px);
+  top: calc(var(--size) * 0.425px);
+  z-index: 4;
+  --trim-offset: calc(var(--trim-width) * 1px);
+  --rear-wheel-left: calc((var(--trim-offset)) + (var(--wheel-arch-rear-left) * 1%));
+  --rear-wheel-top: calc((var(--trim-offset)) + (100 - var(--wheel-arch-rear-height)) * 1%);
+  --rear-wheel-right: calc(var(--rear-wheel-left) + ((var(--wheel-arch-width) * 1%) - var(--trim-offset) * 2));
+  --front-wheel-left: calc((var(--trim-offset)) + (var(--wheel-arch-front-left) * 1%));
+  --front-wheel-top: calc((var(--trim-offset)) + (100 - var(--wheel-arch-front-height)) * 1%);
+  --front-wheel-right: calc(var(--front-wheel-left) + ((var(--wheel-arch-width) * 1%) - var(--trim-offset) * 2));
+  --clip: polygon(-10% 110%, var(--rear-wheel-left) 110%, var(--rear-wheel-left) var(--rear-wheel-top), var(--rear-wheel-right) var(--rear-wheel-top), var(--rear-wheel-right) 110%, var(--front-wheel-left) 110%, var(--front-wheel-left) var(--front-wheel-top), var(--front-wheel-right) var(--front-wheel-top), var(--front-wheel-right) 110%, 110% 110%, 110% -10%, -10% -10%);
+  -webkit-clip-path: var(--clip);
+  clip-path: var(--clip);
+}
+.truck__side-body:after {
+  content: '';
+  position: absolute;
+  top: 15%;
+  left: 30%;
+  background: var(--chrome);
+  height: 5%;
+  width: 5%;
+  border-radius: calc(var(--trim-width) * 1px);
+}
+.truck__rear-bumper {
+  border-radius: calc(var(--trim-width) * 1px);
+  position: absolute;
+  top: 70%;
+  height: 35%;
+  left: 0%;
+  background: var(--chrome);
+  width: 5%;
+  transform: translate(-50%, 0);
+}
+.truck__tail-light {
+  position: absolute;
+  border-radius: 0 25% 25% 0/0 20% 20% 0;
+  --grey: var(--chrome);
+  border: calc(var(--trim-width) * 1px) solid var(--grey);
+  border-left: 0;
+  top: 16%;
+  height: calc(var(--size) * 0.046px);
+  width: calc(var(--size) * 0.023px);
+  background: hsl(var(--tail-light-hue), 100%, 50%);
+  left: 0%;
+}
+.truck__wheel-arch {
+  background: var(--chrome);
+  border-bottom: 0;
+  height: calc(var(--wheel-arch-height) * 1%);
+  width: calc(var(--wheel-arch-width) * 1%);
+  position: absolute;
+  bottom: 0;
+  left: calc(var(--wheel-arch-left) * 1%);
+}
+.truck__wheel-arch--back {
+  --wheel-arch-height: var(--wheel-arch-rear-height);
+  --wheel-arch-left: var(--wheel-arch-rear-left);
+}
+.truck__wheel-arch--front {
+  --wheel-arch-height: var(--wheel-arch-front-height);
+  --wheel-arch-left: var(--wheel-arch-front-left);
+}
+.truck__light-bar {
+  height: calc(var(--size) * 0.0075px);
+  width: calc(var(--size) * 0.18px);
+  background: var(--grill);
+  position: absolute;
+  top: calc(var(--size) * 0.3px);
+  left: calc(var(--size) * 0.45px);
+  border-radius: calc(var(--trim-width) * 1px) calc(var(--trim-width) * 1px) 0 0;
+  transform: translate(0, 500%) translate(0, calc(var(--light-bar-scale, 0) * -500%));
+}
+.truck__light-bar-light {
+  height: 350%;
+  width: 80%;
+  background: #fff;
+  position: absolute;
+  top: 50%;
+  transform-origin: center;
+  left: 50%;
+  border: calc(var(--trim-width) * 1px) solid var(--grill);
+  border-radius: calc(var(--trim-width) * 1px);
+  transform: translate(-50%, -50%);
+}
+.truck__light-bar:after,
+.truck__light-bar:before {
+  content: '';
+  background: var(--grill);
+  position: absolute;
+  top: 50%;
+  width: 5%;
+  height: 250%;
+}
+.truck__light-bar:before {
+  left: 0;
+}
+.truck__light-bar:after {
+  right: 0;
+}
+.truck__bars {
+  position: absolute;
+  width: calc(var(--size) * 0.2px);
+  height: calc(var(--size) * 0.12px);
+  top: calc(var(--size) * 0.325px);
+  left: calc(var(--size) * 0.1px);
+}
+.truck__bar {
+  position: absolute;
+  background: var(--grill);
+  width: 10%;
+  height: 100%;
+  border-radius: 50%/10%;
+  transform-origin: bottom center;
+}
+.truck__bar--vertical {
+  left: 75%;
+  top: 0;
+  transform: rotate(10deg) scaleY(1);
+}
+.truck__bar--horizontal {
+  height: 140%;
+  left: 0%;
+  top: 0;
+  transform: rotate(48deg) translate(0, -40%) scaleY(1);
+}
+.truck__wheel {
+  border-radius: 50% 35% 35% 50%/50% 50% 50% 50%;
+  background: #111;
+  position: absolute;
+  transform-style: preserve-3d;
+  transform-origin: bottom center;
+  transform: scale(var(--wheel-scale, 1));
+  height: 100%;
+  width: 100%;
+}
+.truck__wheel-face {
+  height: 100%;
+  width: calc(var(--wheel-height) * 1px);
+  background: var(--plastic);
+  border-radius: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.truck__wheel-hub {
+  --hub-size: calc(var(--size) * 0.07px);
+  box-shadow: calc(var(--size) * 0.018px) 0 0 0 var(--grill) inset;
+  border: calc(var(--trim-width) * 1px) solid var(--chrome);
+  background: var(--plastic);
+  height: var(--hub-size);
+  width: var(--hub-size);
+  border-radius: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+}
+.truck__wheel-alloy {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 15%;
+  animation: spin 0.5s infinite linear;
+  border-radius: 100%;
+  overflow: hidden;
+}
+@-moz-keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.truck__wheel-spoke {
+  height: 50%;
+  width: 25%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: var(--chrome);
+  transform-origin: top center;
+  transform: translate(-50%, 0) rotate(calc(360 / 5 * var(--s) * 1deg));
+}
+.truck__wheel-container {
+  height: calc(var(--wheel-height) * 1px);
+  width: calc(var(--wheel-width) * 1px);
+  position: absolute;
+  left: 12.5%;
+  bottom: 0;
+}
+.truck__wheel-container--nsf {
+  left: 47.5%;
+  z-index: calc(var(--elevated, 0) * 2);
+}
+.truck__wheel-container--osf,
+.truck__wheel-container--osr {
+  left: 44%;
+  filter: brightness(0.25);
+  --plastic: #000;
+  transform: translate3d(0, 0, -1px);
+}
+.truck__wheel-container--osf .truck__coilover,
+.truck__wheel-container--osr .truck__coilover {
+  transform: translate3d(-50%, 0, 0);
+  z-index: 2;
+}
+.truck__wheel-container--osf {
+  left: 79%;
+}
+.truck__coilover {
+  width: 10%;
+  height: 100%;
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform: translate3d(-50%, 0, -1px);
+  background: var(--grill);
+}
+.truck__coilover:after {
+  content: '';
+  background: repeating-linear-gradient(20deg, transparent, transparent 6%, var(--coilover) 6%, var(--coilover) 11%, transparent 11%);
+  width: 150%;
+  height: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.truck__chassis {
+  background: rgba(0,0,0,0.5);
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+}
+.truck__underbody {
+  --multiplier: 0.05;
+  background: #000;
+  width: 80%;
+  left: 50%;
+  position: absolute;
+  height: calc(var(--size) * 0.1px);
+  bottom: calc(var(--size) * var(--multiplier, 1) * 1px);
+  transform: translate3d(-50%, 0, -1px);
+}
+.truck__chassis-beam {
+  position: absolute;
+  bottom: 50%;
+  background: var(--chassis);
+}
+.truck__chassis-beam--vertical {
+  position: absolute;
+  width: 5%;
+  height: calc(var(--wheel-height) * 0.5px);
+  bottom: 0;
+  transform: scale(calc(var(--elevated) + 1));
+  transform-origin: bottom center;
+}
+.truck__chassis-beam--vertical-left {
+  left: 35%;
+}
+.truck__chassis-beam--vertical-right {
+  left: 65%;
+}
+.truck__chassis-beam--horizontal {
+  transform: translate3d(0, 50%, -1px);
+  width: calc(var(--wheel-width) * 2.4px);
+  height: calc(var(--wheel-height) * 0.15px);
+  bottom: calc(var(--wheel-width) * ((var(--elevated, 0) + 1) / 2) * 1px);
+  transform: translate3d(0, 100%, -1px) scaleY(calc(var(--elevated, 0) + 1));
+  filter: brightness(var(--elevated, 0));
+}
+.truck__chassis-beam--horizontal-left {
+  left: calc(12.5% + (var(--wheel-width) * 0.5px));
+}
+.truck__chassis-beam--horizontal-right {
+  left: calc(47.5% + (var(--wheel-width) * 0.5px));
+}
+@-moz-keyframes upsydownsy {
+  0%, 100% {
+    transform: translate(0, -40%);
+  }
+  50% {
+    transform: translate(0, -42%);
+  }
+}
+@-webkit-keyframes upsydownsy {
+  0%, 100% {
+    transform: translate(0, -40%);
+  }
+  50% {
+    transform: translate(0, -42%);
+  }
+}
+@-o-keyframes upsydownsy {
+  0%, 100% {
+    transform: translate(0, -40%);
+  }
+  50% {
+    transform: translate(0, -42%);
+  }
+}
+@keyframes upsydownsy {
+  0%, 100% {
+    transform: translate(0, -40%);
+  }
+  50% {
+    transform: translate(0, -42%);
+  }
+}
+@-moz-keyframes shake {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(-1%, 3%) rotate(-2deg);
+  }
+  50% {
+    transform: translate(1%, 2%) rotate(2deg);
+  }
+  75% {
+    transform: translate(1%, -2%) rotate(-1deg);
+  }
+}
+@-webkit-keyframes shake {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(-1%, 3%) rotate(-2deg);
+  }
+  50% {
+    transform: translate(1%, 2%) rotate(2deg);
+  }
+  75% {
+    transform: translate(1%, -2%) rotate(-1deg);
+  }
+}
+@-o-keyframes shake {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(-1%, 3%) rotate(-2deg);
+  }
+  50% {
+    transform: translate(1%, 2%) rotate(2deg);
+  }
+  75% {
+    transform: translate(1%, -2%) rotate(-1deg);
+  }
+}
+@keyframes shake {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(-1%, 3%) rotate(-2deg);
+  }
+  50% {
+    transform: translate(1%, 2%) rotate(2deg);
+  }
+  75% {
+    transform: translate(1%, -2%) rotate(-1deg);
+  }
+}
+@-moz-keyframes shake-truck {
+  0%, 100% {
+    transform: translate(0, -50%) rotate(0deg);
+  }
+  25% {
+    transform: translate(0, -50%) rotate(-2deg);
+  }
+  50% {
+    transform: translate(0, -50%) rotate(2deg);
+  }
+  75% {
+    transform: translate(0, -50%) rotate(-1deg);
+  }
+}
+@-webkit-keyframes shake-truck {
+  0%, 100% {
+    transform: translate(0, -50%) rotate(0deg);
+  }
+  25% {
+    transform: translate(0, -50%) rotate(-2deg);
+  }
+  50% {
+    transform: translate(0, -50%) rotate(2deg);
+  }
+  75% {
+    transform: translate(0, -50%) rotate(-1deg);
+  }
+}
+@-o-keyframes shake-truck {
+  0%, 100% {
+    transform: translate(0, -50%) rotate(0deg);
+  }
+  25% {
+    transform: translate(0, -50%) rotate(-2deg);
+  }
+  50% {
+    transform: translate(0, -50%) rotate(2deg);
+  }
+  75% {
+    transform: translate(0, -50%) rotate(-1deg);
+  }
+}
+@keyframes shake-truck {
+  0%, 100% {
+    transform: translate(0, -50%) rotate(0deg);
+  }
+  25% {
+    transform: translate(0, -50%) rotate(-2deg);
+  }
+  50% {
+    transform: translate(0, -50%) rotate(2deg);
+  }
+  75% {
+    transform: translate(0, -50%) rotate(-1deg);
+  }
+}
